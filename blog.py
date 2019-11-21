@@ -28,7 +28,7 @@ def login_required(test):
         if 'logged_in' in session:
             return test(*args, **kwargs)
         else:
-            flash('You are not authorized!')
+            flash('You must be logged in to view that page!')
             return redirect(url_for('login'))
     return wrap
 
@@ -54,6 +54,23 @@ def main():
     posts = [dict(title=row[0], post=row[1]) for row in cur.fetchall()]
     g.db.close()
     return render_template('main.html', posts=posts)
+
+@app.route('/add', methods=['POST'])
+@login_required
+def add():
+    title = request.form['title']
+    post = request.form['post']
+    if not title or not post:
+        flash("All fields are required. Please try again.")
+        return redirect(url_for('main'))
+    else:
+        g.db = connect_db()
+        g.db.execute('INSERT INTO posts (title, post) VALUES (?, ?)',
+            [request.form['title'], request.form['post']])
+        g.db.commit()
+        g.db.close()
+        flash('New entry was successfully posted!')
+        return redirect(url_for('main'))
 
 @app.route('/logout')
 def logout():
