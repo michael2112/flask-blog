@@ -7,10 +7,10 @@ with sqlite3.connect("blog.db") as connection:
     c = connection.cursor()
 
     # create the table
-    c.execute("""
-        CREATE TABLE posts
-        (title TEXT, post TEXT)
-        """)
+    #c.execute("""
+    #    CREATE TABLE posts
+    #    (title TEXT, post TEXT)
+    #    """)
     
     # insert dummy data into the table
     c.execute('INSERT INTO posts VALUES("Good", "I\'m good.")')
